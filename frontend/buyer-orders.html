@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - AgriChain</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .orders-section {
+            min-height: calc(100vh - 70px);
+            padding: 50px 8%;
+            background: #f4f7f4;
+        }
+
+        .orders-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .orders-container h1 {
+            color: #1f5f25;
+            margin-bottom: 8px;
+        }
+
+        .orders-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 18px;
+        }
+
+        .order-id {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .order-date {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .product-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-name {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+
+        .product-details {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .order-total {
+            text-align: right;
+            margin-top: 18px;
+            font-size: 19px;
+            font-weight: bold;
+            color: #1f5f25;
+        }
+
+        .empty-orders {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 12px;
+            color: #666;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 10px 18px;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-btn:hover {
+            background: #256628;
+        }
+
+        @media (max-width: 768px) {
+            .orders-section {
+                padding: 35px 20px;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🌾 AgriChain
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="buyer.html">Products</a>
+            </li>
+
+            <li>
+                <a href="cart.html">🛒 Cart</a>
+            </li>
+
+            <li>
+                <a href="buyer-orders.html">My Orders</a>
+            </li>
+
+            <li>
+                <a href="#" onclick="logout()">Logout</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- ORDERS SECTION -->
+
+    <section class="orders-section">
+
+        <div class="orders-container">
+
+            <a href="buyer.html" class="back-btn">
+                ← Back to Products
+            </a>
+
+            <h1>My Orders</h1>
+
+            <p class="orders-subtitle">
+                View your previous orders and track their status.
+            </p>
+
+            <div id="ordersContainer">
+
+                <div class="empty-orders">
+                    Loading orders...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <script>
+
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+
+            alert("Please login first.");
+
+            window.location.href = "login.html";
+
+        }
+
+        const user = JSON.parse(userData);
+
+
+        async function loadOrders() {
+
+            const container =
+                document.getElementById("ordersContainer");
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:5000/api/orders/buyer/${user.id}`
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message || "Unable to load orders."
+                    );
+
+                }
+
+
+                const orders = data.orders;
+
+
+                if (!orders || orders.length === 0) {
+
+                    container.innerHTML = `
+                        <div class="empty-orders">
+                            <h2>No Orders Yet</h2>
+
+                            <p>
+                                You haven't placed any orders yet.
+                            </p>
+
+                            <br>
+
+                            <a href="buyer.html"
+                               class="back-btn">
+                                Browse Products
+                            </a>
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                orders.forEach(order => {
+
+                    let productsHTML = "";
+
+
+                    order.products.forEach(product => {
+
+                        productsHTML += `
+
+                            <div class="product-row">
+
+                                <div class="product-name">
+                                    ${product.productName}
+                                </div>
+
+                                <div class="product-details">
+
+                                    Farmer:
+                                    ${product.farmerName}
+
+                                    <br>
+
+                                    Quantity:
+                                    ${product.quantity}
+                                    ${product.unit}
+
+                                    <br>
+
+                                    Price:
+                                    ₹${Number(product.price).toFixed(2)}
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    });
+
+
+                    let statusClass =
+                        "status-" +
+                        order.status.toLowerCase();
+
+
+                    const orderDate =
+                        new Date(order.createdAt)
+                        .toLocaleString();
+
+
+                    container.innerHTML += `
+
+                        <div class="order-card">
+
+                            <div class="order-header">
+
+                                <div>
+
+                                    <div class="order-id">
+
+                                        Order ID:
+                                        ${order._id}
+
+                                    </div>
+
+                                    <div class="order-date">
+
+                                        ${orderDate}
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="status ${statusClass}">
+
+                                    ${order.status}
+
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                ${productsHTML}
+
+                            </div>
+
+
+                            <div class="order-total">
+
+                                Total:
+                                ₹${Number(order.totalAmount).toFixed(2)}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                container.innerHTML = `
+
+                    <div class="empty-orders">
+
+                        <h2>Unable to Load Orders</h2>
+
+                        <p>
+                            ${error.message}
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem("user");
+
+            localStorage.removeItem("cart");
+
+            window.location.href = "login.html";
+
+        }
+
+
+        loadOrders();
+
+    </script>
+
+</body>
+
+</html>

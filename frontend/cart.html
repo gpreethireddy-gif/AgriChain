@@ -87,12 +87,11 @@
 
                 </div>
 
-
             </div>
 
 
 
-            <!-- TOTAL -->
+            <!-- ORDER SUMMARY -->
 
             <div class="dashboard-card"
                  style="margin-top:25px;">
@@ -149,14 +148,11 @@
 
         function loadCart() {
 
-
             const cartContainer =
                 document.getElementById(
                     "cartContainer"
                 );
 
-
-            // Get cart from localStorage
 
             let cart =
                 JSON.parse(
@@ -164,8 +160,7 @@
                 ) || [];
 
 
-
-            // Empty cart
+            // Check if cart is empty
 
             if (cart.length === 0) {
 
@@ -198,20 +193,19 @@
 
 
 
-            // Clear container
+            // Clear existing content
 
             cartContainer.innerHTML =
                 "";
-
 
 
             let total = 0;
 
 
 
-            // =================================
+            // =====================================
             // DISPLAY CART PRODUCTS
-            // =================================
+            // =====================================
 
             cart.forEach(
                 (product, index) => {
@@ -219,7 +213,6 @@
 
                     total +=
                         Number(product.price);
-
 
 
                     const cartItem =
@@ -254,39 +247,47 @@
 
 
                         <p>
+
                             <strong>
                                 Category:
                             </strong>
 
                             ${product.category}
+
                         </p>
 
 
                         <p>
+
                             <strong>
                                 Quantity:
                             </strong>
 
                             ${product.quantity}
                             ${product.unit}
+
                         </p>
 
 
                         <p>
+
                             <strong>
                                 Price:
                             </strong>
 
                             ₹${product.price}
+
                         </p>
 
 
                         <p>
+
                             <strong>
                                 Farmer:
                             </strong>
 
                             ${product.farmerName}
+
                         </p>
 
 
@@ -310,9 +311,7 @@
 
 
 
-            // =================================
-            // DISPLAY TOTAL
-            // =================================
+            // Display total
 
             document.getElementById(
                 "totalAmount"
@@ -324,11 +323,10 @@
 
 
         // =====================================
-        // REMOVE PRODUCT
+        // REMOVE FROM CART
         // =====================================
 
         function removeFromCart(index) {
-
 
             let cart =
                 JSON.parse(
@@ -371,14 +369,45 @@
         // PLACE ORDER
         // =====================================
 
-        function placeOrder() {
+        async function placeOrder() {
 
 
-            let cart =
+            // Get logged-in buyer
+
+            const userData =
+                localStorage.getItem("user");
+
+
+            if (!userData) {
+
+                alert(
+                    "Please login first."
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+
+                return;
+
+            }
+
+
+            const user =
+                JSON.parse(userData);
+
+
+
+            // Get cart
+
+            const cart =
                 JSON.parse(
                     localStorage.getItem("cart")
                 ) || [];
 
+
+            // Check cart
 
             if (cart.length === 0) {
 
@@ -386,24 +415,173 @@
                     "Your cart is empty."
                 );
 
+
                 return;
 
             }
 
 
-            alert(
-                "Order placed successfully!"
+
+            // =====================================
+            // CALCULATE TOTAL
+            // =====================================
+
+            let totalAmount = 0;
+
+
+            cart.forEach(
+                product => {
+
+                    totalAmount +=
+                        Number(product.price);
+
+                }
             );
 
 
-            // Clear cart
 
-            localStorage.removeItem(
-                "cart"
-            );
+            // =====================================
+            // PREPARE PRODUCTS
+            // =====================================
+
+            const products =
+                cart.map(
+                    product => ({
+
+                        productId:
+                            product._id,
+
+                        productName:
+                            product.productName,
+
+                        farmerId:
+                            product.farmerId,
+
+                        farmerName:
+                            product.farmerName,
+
+                        quantity:
+                            Number(
+                                product.quantity
+                            ),
+
+                        unit:
+                            product.unit,
+
+                        price:
+                            Number(
+                                product.price
+                            )
+
+                    })
+                );
 
 
-            loadCart();
+
+            try {
+
+
+                // =================================
+                // SEND ORDER TO BACKEND
+                // =================================
+
+                const response =
+                    await fetch(
+                        "http://localhost:5000/api/orders/place",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    buyerId:
+                                        user.id,
+
+                                    buyerName:
+                                        user.name,
+
+                                    products:
+                                        products,
+
+                                    totalAmount:
+                                        totalAmount
+
+                                })
+
+                        }
+                    );
+
+
+
+                // Convert response
+
+                const data =
+                    await response.json();
+
+
+
+                // Check response
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to place order."
+                    );
+
+                }
+
+
+
+                // =================================
+                // SUCCESS
+                // =================================
+
+                alert(
+                    "Order placed successfully!\n\n" +
+                    "Order ID: " +
+                    data.order._id
+                );
+
+
+
+                // Clear cart
+
+                localStorage.removeItem(
+                    "cart"
+                );
+
+
+
+                // Reload cart
+
+                loadCart();
+
+
+            }
+            catch (error) {
+
+
+                console.error(
+                    "Place Order Error:",
+                    error
+                );
+
+
+                alert(
+                    "Unable to place order.\n\n" +
+                    error.message
+                );
+
+            }
 
         }
 
@@ -434,7 +612,7 @@
 
 
         // =====================================
-        // LOAD CART ON PAGE OPEN
+        // LOAD CART
         // =====================================
 
         loadCart();
