@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Shopping Cart - AgriChain</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🌾 AgriChain
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="buyer.html">
+                Products
+            </a>
+
+            <a href="#"
+               onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         CART SECTION
+    ========================== -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+
+            <h1>
+                🛒 Shopping Cart
+            </h1>
+
+
+            <p class="dashboard-subtitle">
+                Review the agricultural products you selected.
+            </p>
+
+
+
+            <!-- CART PRODUCTS -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    Your Cart
+                </h2>
+
+
+                <div id="cartContainer">
+
+                    <p>
+                        Loading cart...
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TOTAL -->
+
+            <div class="dashboard-card"
+                 style="margin-top:25px;">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <h3 id="totalAmount"
+                    style="font-size:24px; color:#2e7d32;">
+
+                    Total: ₹0
+
+                </h3>
+
+
+                <button
+                    class="dashboard-btn"
+                    onclick="placeOrder()">
+
+                    Place Order
+
+                </button>
+
+
+                <button
+                    class="cancel-btn"
+                    onclick="continueShopping()">
+
+                    Continue Shopping
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        // =====================================
+        // LOAD CART
+        // =====================================
+
+        function loadCart() {
+
+
+            const cartContainer =
+                document.getElementById(
+                    "cartContainer"
+                );
+
+
+            // Get cart from localStorage
+
+            let cart =
+                JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+
+
+            // Empty cart
+
+            if (cart.length === 0) {
+
+                cartContainer.innerHTML = `
+
+                    <p>
+                        Your cart is empty.
+                    </p>
+
+                    <button
+                        class="dashboard-btn"
+                        onclick="continueShopping()">
+
+                        Browse Products
+
+                    </button>
+
+                `;
+
+
+                document.getElementById(
+                    "totalAmount"
+                ).textContent =
+                    "Total: ₹0";
+
+
+                return;
+
+            }
+
+
+
+            // Clear container
+
+            cartContainer.innerHTML =
+                "";
+
+
+
+            let total = 0;
+
+
+
+            // =================================
+            // DISPLAY CART PRODUCTS
+            // =================================
+
+            cart.forEach(
+                (product, index) => {
+
+
+                    total +=
+                        Number(product.price);
+
+
+
+                    const cartItem =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    cartItem.style.border =
+                        "1px solid #ddd";
+
+                    cartItem.style.borderRadius =
+                        "10px";
+
+                    cartItem.style.padding =
+                        "20px";
+
+                    cartItem.style.marginBottom =
+                        "15px";
+
+                    cartItem.style.background =
+                        "#ffffff";
+
+
+
+                    cartItem.innerHTML = `
+
+                        <h3
+                            style="color:#2e7d32;">
+                            ${product.productName}
+                        </h3>
+
+
+                        <p>
+                            <strong>
+                                Category:
+                            </strong>
+
+                            ${product.category}
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Quantity:
+                            </strong>
+
+                            ${product.quantity}
+                            ${product.unit}
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Price:
+                            </strong>
+
+                            ₹${product.price}
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Farmer:
+                            </strong>
+
+                            ${product.farmerName}
+                        </p>
+
+
+                        <button
+                            class="cancel-btn"
+                            onclick="removeFromCart(${index})">
+
+                            Remove
+
+                        </button>
+
+                    `;
+
+
+                    cartContainer.appendChild(
+                        cartItem
+                    );
+
+                }
+            );
+
+
+
+            // =================================
+            // DISPLAY TOTAL
+            // =================================
+
+            document.getElementById(
+                "totalAmount"
+            ).textContent =
+                "Total: ₹" + total;
+
+        }
+
+
+
+        // =====================================
+        // REMOVE PRODUCT
+        // =====================================
+
+        function removeFromCart(index) {
+
+
+            let cart =
+                JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+
+            cart.splice(
+                index,
+                1
+            );
+
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(cart)
+            );
+
+
+            loadCart();
+
+        }
+
+
+
+        // =====================================
+        // CONTINUE SHOPPING
+        // =====================================
+
+        function continueShopping() {
+
+            window.location.href =
+                "buyer.html";
+
+        }
+
+
+
+        // =====================================
+        // PLACE ORDER
+        // =====================================
+
+        function placeOrder() {
+
+
+            let cart =
+                JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+
+            if (cart.length === 0) {
+
+                alert(
+                    "Your cart is empty."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Order placed successfully!"
+            );
+
+
+            // Clear cart
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+
+            loadCart();
+
+        }
+
+
+
+        // =====================================
+        // LOGOUT
+        // =====================================
+
+        function logout() {
+
+
+            localStorage.removeItem(
+                "user"
+            );
+
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+
+        // =====================================
+        // LOAD CART ON PAGE OPEN
+        // =====================================
+
+        loadCart();
+
+
+    </script>
+
+
+</body>
+
+</html>
