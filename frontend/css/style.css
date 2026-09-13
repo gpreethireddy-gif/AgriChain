@@ -327,3 +327,463 @@ footer {
     }
 
 }
+
+/* =========================
+   FARMER DASHBOARD
+========================= */
+
+.dashboard-section {
+    min-height: calc(100vh - 70px);
+    padding: 50px 8%;
+    background: #f5f8f5;
+}
+
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.dashboard-container h1 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.dashboard-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   FARMER INFORMATION
+========================= */
+
+.dashboard-container > .dashboard-card {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-container > .dashboard-card h2 {
+    margin-bottom: 18px;
+    color: #2e7d32;
+}
+
+.dashboard-container > .dashboard-card p {
+    margin: 10px 0;
+    color: #555;
+}
+
+
+/* =========================
+   DASHBOARD GRID
+========================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.dashboard-grid .dashboard-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.dashboard-grid .dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-grid .dashboard-card h2 {
+    margin-bottom: 12px;
+    color: #2e7d32;
+}
+
+.dashboard-grid .dashboard-card p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+
+/* =========================
+   DASHBOARD BUTTON
+========================= */
+
+.dashboard-btn {
+    padding: 11px 20px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #2e7d32;
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.dashboard-btn:hover {
+    background: #256628;
+}
+
+
+/* =========================
+   DASHBOARD RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .dashboard-section {
+        padding: 35px 20px;
+    }
+
+    .dashboard-container h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================
+   FARMER DASHBOARD
+========================= */
+
+.dashboard-section {
+    min-height: calc(100vh - 70px);
+    padding: 50px 8%;
+    background: #f4f7f4;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.dashboard-container h1 {
+    font-size: 36px;
+    color: #1f5f25;
+    margin-bottom: 8px;
+}
+
+.dashboard-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   FARMER INFORMATION
+========================= */
+
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+}
+
+.dashboard-card h2 {
+    font-size: 21px;
+    margin-bottom: 18px;
+    color: #2e7d32;
+}
+
+.dashboard-card p {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 8px;
+}
+
+
+/* =========================
+   DASHBOARD GRID
+========================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.dashboard-grid .dashboard-card {
+    min-height: 200px;
+    transition: 0.3s ease;
+}
+
+.dashboard-grid .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================
+   DASHBOARD BUTTON
+========================= */
+
+.dashboard-btn {
+    margin-top: 15px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 6px;
+
+    background: #2e7d32;
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.dashboard-btn:hover {
+    background: #256628;
+}
+
+
+/* =========================
+   MOBILE DASHBOARD
+========================= */
+
+@media (max-width: 768px) {
+
+    .dashboard-section {
+        padding: 35px 20px;
+    }
+
+    .dashboard-container h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================
+   ADD PRODUCT FORM
+========================= */
+
+.product-form-container {
+    width: 100%;
+    max-width: 750px;
+
+    margin: 35px auto 0;
+
+    padding: 35px;
+
+    background: white;
+
+    border-radius: 14px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+
+    border: 1px solid #e5e5e5;
+}
+
+
+/* Form Heading */
+
+.product-form-container h2 {
+    color: #2e7d32;
+
+    font-size: 24px;
+
+    margin-bottom: 25px;
+
+    text-align: center;
+}
+
+
+/* Form Groups */
+
+.product-form-container .form-group {
+    margin-bottom: 20px;
+}
+
+
+/* Labels */
+
+.product-form-container label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: bold;
+
+    color: #333;
+}
+
+
+/* Input and Select */
+
+.product-form-container input,
+.product-form-container select,
+.product-form-container textarea {
+
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+
+    font-family: Arial, sans-serif;
+
+    outline: none;
+
+    background: white;
+
+}
+
+
+/* Focus Effect */
+
+.product-form-container input:focus,
+.product-form-container select:focus,
+.product-form-container textarea:focus {
+
+    border-color: #2e7d32;
+
+    box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.1);
+
+}
+
+
+/* Textarea */
+
+.product-form-container textarea {
+
+    resize: vertical;
+
+    min-height: 100px;
+
+}
+
+
+/* Add Product Button */
+
+.product-form-container .dashboard-btn {
+
+    padding: 13px 25px;
+
+    margin-top: 5px;
+
+    background: #2e7d32;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.product-form-container .dashboard-btn:hover {
+
+    background: #256628;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* Cancel Button */
+
+.cancel-btn {
+
+    padding: 12px 25px;
+
+    margin-left: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    background: white;
+
+    color: #555;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.cancel-btn:hover {
+
+    background: #f2f2f2;
+
+    border-color: #aaa;
+
+}
+
+
+/* =========================
+   MOBILE FORM
+========================= */
+
+@media (max-width: 768px) {
+
+    .product-form-container {
+
+        padding: 25px 20px;
+
+        margin-top: 25px;
+
+    }
+
+
+    .product-form-container h2 {
+
+        font-size: 21px;
+
+    }
+
+
+    .product-form-container .dashboard-btn,
+    .cancel-btn {
+
+        width: 100%;
+
+        margin-left: 0;
+
+        margin-top: 10px;
+
+    }
+
+}

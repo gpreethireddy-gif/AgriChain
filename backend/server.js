@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
-
+const productRoutes = require("./routes/product");
 const app = express();
 
 
@@ -22,7 +22,13 @@ app.use(express.json());
 // =========================
 
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
+app.get("/server-test", (req, res) => {
+    res.json({
+        message: "The correct server.js is running!"
+    });
+});
 
 // =========================
 // DATABASE CONNECTION

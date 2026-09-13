@@ -1,170 +1,196 @@
-// =========================
-// REGISTER
-// =========================
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 
-const registerForm = document.getElementById("registerForm");
-
-if (registerForm) {
-
-    registerForm.addEventListener("submit", async function (event) {
-
-        event.preventDefault();
-
-
-        // Get form values
-
-        const name =
-            document.getElementById("name").value.trim();
-
-        const email =
-            document.getElementById("email").value.trim();
-
-        const phone =
-            document.getElementById("phone").value.trim();
-
-        const role =
-            document.getElementById("role").value;
-
-        const password =
-            document.getElementById("password").value;
-
-        const confirmPassword =
-            document.getElementById("confirmPassword").value;
-
-
-        // =========================
-        // VALIDATION
-        // =========================
-
-        if (password !== confirmPassword) {
-
-            alert("Passwords do not match!");
-
-            return;
-        }
-
-
-        if (role === "") {
-
-            alert("Please select your role.");
-
-            return;
-        }
-
-
-        // =========================
-        // SEND DATA TO BACKEND
-        // =========================
-
-        try {
-
-            const response = await fetch(
-                "http://localhost:5000/api/auth/register",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        role: role,
-                        password: password
-
-                    })
-                }
-            );
-
-
-            const data = await response.json();
-
-
-            // =========================
-            // RESPONSE
-            // =========================
-
-            if (response.ok) {
-
-                alert(data.message);
-
-                registerForm.reset();
-
-            }
-
-            else {
-
-                alert(data.message);
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Registration error:",
-                error
-            );
-
-            alert(
-                "Unable to connect to the server."
-            );
-
-        }
-
-    });
-
-}
+const router = express.Router();
 
 
 // =========================
-// LOGIN
+// REGISTER USER
 // =========================
 
-const loginForm = document.getElementById("loginForm");
+router.post("/register", async (req, res) => {
 
-if (loginForm) {
+    try {
 
-    loginForm.addEventListener("submit", async function (event) {
-
-        event.preventDefault();
-
-        const email =
-            document.getElementById("loginEmail").value.trim();
-
-        const password =
-            document.getElementById("loginPassword").value;
-
-        const role =
-            document.getElementById("loginRole").value;
+        const {
+            name,
+            email,
+            phone,
+            role,
+            password
+        } = req.body;
 
 
-        if (role === "") {
+        // Check if email already exists
+        const existingUser = await User.findOne({
+            email: email
+        });
 
-            alert("Please select your role.");
+        if (existingUser) {
 
-            return;
+            return res.status(400).json({
+                message: "Email already registered"
+            });
 
         }
 
 
-        console.log("Login Data:", {
+        // Hash password
+        const hashedPassword =
+            await bcrypt.hash(password, 10);
 
+
+        // Create new user
+        const user = new User({
+
+            name: name,
             email: email,
-            password: password,
-            role: role
+            phone: phone,
+            role: role,
+            password: hashedPassword
 
         });
 
 
-        alert(
-            "Login API will be connected next."
-        );
+        // Save user to MongoDB
+        await user.save();
 
-    });
 
-}
+        res.status(201).json({
+
+            message:
+                "User registered successfully!",
+
+            user: {
+
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+
+            }
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+
+            message: "Server error",
+            error: error.message
+
+        });
+
+    }
+
+});
+
+
+
+// =========================
+// LOGIN USER
+// =========================
+
+router.post("/login", async (req, res) => {
+
+    try {
+
+        const {
+            email,
+            password,
+            role
+        } = req.body;
+
+
+        // Find user by email
+        const user = await User.findOne({
+            email: email
+        });
+
+
+        // User not found
+        if (!user) {
+
+            return res.status(401).json({
+
+                message:
+                    "Invalid email or password"
+
+            });
+
+        }
+
+
+        // Check selected role
+        if (user.role !== role) {
+
+            return res.status(401).json({
+
+                message:
+                    "Invalid role selected"
+
+            });
+
+        }
+
+
+        // Compare password
+        const passwordMatch =
+            await bcrypt.compare(
+                password,
+                user.password
+            );
+
+
+        // Wrong password
+        if (!passwordMatch) {
+
+            return res.status(401).json({
+
+                message:
+                    "Invalid email or password"
+
+            });
+
+        }
+
+
+        // Login successful
+        res.status(200).json({
+
+            message:
+                "Login successful!",
+
+            user: {
+
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+
+            }
+
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+
+            message: "Server error",
+            error: error.message
+
+        });
+
+    }
+
+});
+
+
+module.exports = router;

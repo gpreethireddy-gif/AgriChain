@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Dashboard - AgriChain</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION BAR
+    ========================== -->
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                🌾 AgriChain
+            </div>
+
+            <div class="nav-links">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="products.html">
+                    Products
+                </a>
+
+                <a href="#" id="logoutBtn">
+                    Logout
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =========================
+         FARMER DASHBOARD
+    ========================== -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+
+            <!-- Dashboard Heading -->
+
+            <h1>
+                🌾 Farmer Dashboard
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Welcome to your AgriChain farming dashboard.
+            </p>
+
+
+
+            <!-- =========================
+                 FARMER INFORMATION
+            ========================== -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    👤 Farmer Information
+                </h2>
+
+                <p>
+
+                    <strong>Name:</strong>
+
+                    <span id="farmerName">
+                        Loading...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Email:</strong>
+
+                    <span id="farmerEmail">
+                        Loading...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Role:</strong>
+
+                    <span id="farmerRole">
+                        Farmer
+                    </span>
+
+                </p>
+
+            </div>
+
+
+
+            <!-- =========================
+                 DASHBOARD OPTIONS
+            ========================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- ADD PRODUCT -->
+
+                <div class="dashboard-card">
+
+                    <h2>
+                        ➕ Add Product
+                    </h2>
+
+                    <p>
+                        List your agricultural products
+                        for buyers.
+                    </p>
+
+                    <button
+                        class="dashboard-btn"
+                        id="showProductFormBtn">
+
+                        Add Product
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- MY PRODUCTS -->
+
+                <div class="dashboard-card">
+
+                    <h2>
+                        📦 My Products
+                    </h2>
+
+                    <p>
+                        View and manage your listed
+                        agricultural products.
+                    </p>
+
+                    <button
+                        class="dashboard-btn"
+                        onclick="window.location.href='products.html'">
+
+                        View Products
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- ORDERS -->
+
+                <div class="dashboard-card">
+
+                    <h2>
+                        🛒 Orders
+                    </h2>
+
+                    <p>
+                        Check orders received from
+                        buyers.
+                    </p>
+
+                    <button
+                        class="dashboard-btn"
+                        onclick="alert('Orders feature coming next!')">
+
+                        View Orders
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- BLOCKCHAIN -->
+
+                <div class="dashboard-card">
+
+                    <h2>
+                        ⛓️ Blockchain
+                    </h2>
+
+                    <p>
+                        Track agricultural transactions
+                        securely using blockchain.
+                    </p>
+
+                    <button
+                        class="dashboard-btn"
+                        onclick="alert('Blockchain feature coming next!')">
+
+                        View Transactions
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 ADD PRODUCT FORM
+            ========================== -->
+
+            <div
+                class="product-form-container"
+                id="addProductForm"
+                style="display: none;">
+
+
+                <h2>
+                    🌾 Add Agricultural Product
+                </h2>
+
+
+                <form id="productForm">
+
+
+                    <!-- PRODUCT NAME -->
+
+                    <div class="form-group">
+
+                        <label for="productName">
+                            Product Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="productName"
+                            placeholder="Example: Rice"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <select
+                            id="category"
+                            required>
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option value="Grains">
+                                Grains
+                            </option>
+
+                            <option value="Vegetables">
+                                Vegetables
+                            </option>
+
+                            <option value="Fruits">
+                                Fruits
+                            </option>
+
+                            <option value="Pulses">
+                                Pulses
+                            </option>
+
+                            <option value="Spices">
+                                Spices
+                            </option>
+
+                            <option value="Others">
+                                Others
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            placeholder="Example: 100"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- UNIT -->
+
+                    <div class="form-group">
+
+                        <label for="unit">
+                            Unit
+                        </label>
+
+                        <select
+                            id="unit"
+                            required>
+
+                            <option value="">
+                                Select Unit
+                            </option>
+
+                            <option value="Kg">
+                                Kg
+                            </option>
+
+                            <option value="Quintal">
+                                Quintal
+                            </option>
+
+                            <option value="Ton">
+                                Ton
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- PRICE -->
+
+                    <div class="form-group">
+
+                        <label for="price">
+                            Price per Unit (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="price"
+                            placeholder="Example: 2500"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Enter product details..."
+                            rows="4"></textarea>
+
+                    </div>
+
+
+
+                    <!-- SUBMIT BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="dashboard-btn">
+
+                        Add Product
+
+                    </button>
+
+
+
+                    <!-- CANCEL BUTTON -->
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        id="cancelProductBtn">
+
+                        Cancel
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 AgriChain |
+            Blockchain Agriculture Trading Platform
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        // ==================================
+        // GET LOGGED-IN USER
+        // ==================================
+
+        const userData =
+            localStorage.getItem("user");
+
+
+        // ==================================
+        // CHECK LOGIN
+        // ==================================
+
+        if (!userData) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+        }
+        else {
+
+            const user =
+                JSON.parse(userData);
+
+
+            // Display user information
+
+            document.getElementById(
+                "farmerName"
+            ).textContent =
+                user.name;
+
+
+            document.getElementById(
+                "farmerEmail"
+            ).textContent =
+                user.email;
+
+
+            document.getElementById(
+                "farmerRole"
+            ).textContent =
+                user.role;
+
+        }
+
+
+
+        // ==================================
+        // SHOW ADD PRODUCT FORM
+        // ==================================
+
+        document.getElementById(
+            "showProductFormBtn"
+        ).addEventListener(
+            "click",
+            function () {
+
+                document.getElementById(
+                    "addProductForm"
+                ).style.display = "block";
+
+                // Scroll to form
+
+                document.getElementById(
+                    "addProductForm"
+                ).scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+
+
+        // ==================================
+        // CANCEL PRODUCT FORM
+        // ==================================
+
+        document.getElementById(
+            "cancelProductBtn"
+        ).addEventListener(
+            "click",
+            function () {
+
+                document.getElementById(
+                    "addProductForm"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "productForm"
+                ).reset();
+
+            }
+        );
+
+
+
+        // ==================================
+        // ADD PRODUCT
+        // ==================================
+
+        document.getElementById(
+            "productForm"
+        ).addEventListener(
+            "submit",
+            async function (event) {
+
+
+                // Stop page refresh
+
+                event.preventDefault();
+
+
+                // Get logged-in user
+
+                const user =
+                    JSON.parse(
+                        localStorage.getItem("user")
+                    );
+
+
+                // Get product details
+
+                const productName =
+                    document.getElementById(
+                        "productName"
+                    ).value.trim();
+
+
+                const category =
+                    document.getElementById(
+                        "category"
+                    ).value;
+
+
+                const quantity =
+                    document.getElementById(
+                        "quantity"
+                    ).value;
+
+
+                const unit =
+                    document.getElementById(
+                        "unit"
+                    ).value;
+
+
+                const price =
+                    document.getElementById(
+                        "price"
+                    ).value;
+
+
+                const description =
+                    document.getElementById(
+                        "description"
+                    ).value.trim();
+
+
+
+                // ==================================
+                // SEND PRODUCT TO BACKEND
+                // ==================================
+
+                try {
+
+
+                    const response =
+                        await fetch(
+                            "http://localhost:5000/api/products/add",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    farmerId:
+                                        user.id,
+
+                                    farmerName:
+                                        user.name,
+
+                                    productName:
+                                        productName,
+
+                                    category:
+                                        category,
+
+                                    quantity:
+                                        Number(quantity),
+
+                                    unit:
+                                        unit,
+
+                                    price:
+                                        Number(price),
+
+                                    description:
+                                        description
+
+                                })
+
+                            }
+                        );
+
+
+
+                    // Get response
+
+                    const data =
+                        await response.json();
+
+
+
+                    // ==================================
+                    // SUCCESS
+                    // ==================================
+
+                    if (response.ok) {
+
+
+                        alert(
+                            "Product added successfully!"
+                        );
+
+
+                        // Clear form
+
+                        document.getElementById(
+                            "productForm"
+                        ).reset();
+
+
+                        // Hide form
+
+                        document.getElementById(
+                            "addProductForm"
+                        ).style.display =
+                            "none";
+
+
+                    }
+                    else {
+
+
+                        alert(
+                            data.message ||
+                            "Unable to add product."
+                        );
+
+                    }
+
+
+                }
+                catch (error) {
+
+
+                    console.error(
+                        "Add Product Error:",
+                        error
+                    );
+
+
+                    alert(
+                        "Unable to connect to the server."
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        // ==================================
+        // LOGOUT
+        // ==================================
+
+        document.getElementById(
+            "logoutBtn"
+        ).addEventListener(
+            "click",
+            function (event) {
+
+
+                event.preventDefault();
+
+
+                localStorage.removeItem(
+                    "user"
+                );
+
+
+                alert(
+                    "Logged out successfully!"
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

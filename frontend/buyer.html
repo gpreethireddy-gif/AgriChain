@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Buyer Dashboard - AgriChain</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🌾 AgriChain
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="products.html">
+                Products
+            </a>
+
+            <a href="#"
+               onclick="viewCart()">
+                🛒 Cart
+            </a>
+
+            <a href="#"
+               onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         BUYER DASHBOARD
+    ========================== -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+
+            <!-- Welcome message -->
+
+            <h1 id="welcomeMessage">
+                Welcome, Buyer
+            </h1>
+
+
+            <p class="dashboard-subtitle">
+                Browse agricultural products available from farmers.
+            </p>
+
+
+
+            <!-- =========================
+                 AVAILABLE PRODUCTS
+            ========================== -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    Available Products
+                </h2>
+
+
+                <div id="productsContainer">
+
+                    <p>
+                        Loading products...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        // =====================================
+        // GET LOGGED-IN USER
+        // =====================================
+
+        const userData =
+            localStorage.getItem("user");
+
+
+        if (!userData) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+        }
+        else {
+
+            const user =
+                JSON.parse(userData);
+
+
+            document.getElementById(
+                "welcomeMessage"
+            ).textContent =
+                "Welcome, " + user.name;
+
+        }
+
+
+
+        // =====================================
+        // LOAD PRODUCTS FROM BACKEND
+        // =====================================
+
+        async function loadProducts() {
+
+
+            const productsContainer =
+                document.getElementById(
+                    "productsContainer"
+                );
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "http://localhost:5000/api/products"
+                    );
+
+
+                // Check server response
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server error"
+                    );
+
+                }
+
+
+                // Convert response to JSON
+
+                const data =
+                    await response.json();
+
+
+                // Clear loading message
+
+                productsContainer.innerHTML =
+                    "";
+
+
+
+                // =================================
+                // CHECK PRODUCTS
+                // =================================
+
+                if (
+                    !data.products ||
+                    data.products.length === 0
+                ) {
+
+                    productsContainer.innerHTML = `
+                        <p>
+                            No products available.
+                        </p>
+                    `;
+
+                    return;
+
+                }
+
+
+
+                // =================================
+                // DISPLAY PRODUCTS
+                // =================================
+
+                data.products.forEach(
+                    product => {
+
+
+                        const productCard =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        // Card styling
+
+                        productCard.style.border =
+                            "1px solid #ddd";
+
+                        productCard.style.borderRadius =
+                            "10px";
+
+                        productCard.style.padding =
+                            "20px";
+
+                        productCard.style.marginBottom =
+                            "15px";
+
+                        productCard.style.background =
+                            "#ffffff";
+
+                        productCard.style.boxShadow =
+                            "0 3px 10px rgba(0,0,0,0.05)";
+
+
+
+                        // =================================
+                        // PRODUCT DETAILS
+                        // =================================
+
+                        productCard.innerHTML = `
+
+                            <h3
+                                style="color:#2e7d32; margin-bottom:15px;">
+                                ${product.productName}
+                            </h3>
+
+
+                            <p>
+                                <strong>
+                                    Category:
+                                </strong>
+
+                                ${product.category}
+                            </p>
+
+
+                            <p>
+                                <strong>
+                                    Available Quantity:
+                                </strong>
+
+                                ${product.quantity}
+                                ${product.unit}
+                            </p>
+
+
+                            <p>
+                                <strong>
+                                    Price:
+                                </strong>
+
+                                ₹${product.price}
+                            </p>
+
+
+                            <p>
+                                <strong>
+                                    Farmer:
+                                </strong>
+
+                                ${product.farmerName}
+                            </p>
+
+
+                            <p>
+                                <strong>
+                                    Description:
+                                </strong>
+
+                                ${product.description ||
+                                "No description"}
+                            </p>
+
+
+                            <button
+                                class="dashboard-btn"
+                                onclick='addToCart(${JSON.stringify(product)})'>
+
+                                🛒 Add to Cart
+
+                            </button>
+
+                        `;
+
+
+                        // Add card to page
+
+                        productsContainer.appendChild(
+                            productCard
+                        );
+
+
+                    }
+                );
+
+
+            }
+            catch (error) {
+
+
+                console.error(
+                    "Product loading error:",
+                    error
+                );
+
+
+                productsContainer.innerHTML = `
+
+                    <p style="color:red;">
+
+                        Unable to connect to server.
+
+                        <br><br>
+
+                        Please make sure the
+                        AgriChain backend is running.
+
+                    </p>
+
+                `;
+
+            }
+
+        }
+
+
+
+        // =====================================
+        // ADD PRODUCT TO CART
+        // =====================================
+
+        function addToCart(product) {
+
+
+            // Get existing cart
+
+            let cart =
+                JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+
+
+            // Check whether product already exists
+
+            const existingProduct =
+                cart.find(
+                    item =>
+                        item._id === product._id
+                );
+
+
+
+            if (existingProduct) {
+
+
+                alert(
+                    product.productName +
+                    " is already in your cart!"
+                );
+
+
+                return;
+
+            }
+
+
+
+            // Add product
+
+            cart.push(product);
+
+
+
+            // Save cart
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(cart)
+            );
+
+
+
+            // Success message
+
+            alert(
+                product.productName +
+                " added to cart successfully!"
+            );
+
+        }
+
+
+
+        // =====================================
+        // VIEW CART
+        // =====================================
+
+        function viewCart() {
+
+
+            const cart =
+                JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+
+
+            if (cart.length === 0) {
+
+                alert(
+                    "Your cart is empty."
+                );
+
+                return;
+
+            }
+
+
+            // For now show cart items
+
+            let message =
+                "Products in your cart:\n\n";
+
+
+            cart.forEach(
+                (product, index) => {
+
+                    message +=
+                        (index + 1) +
+                        ". " +
+                        product.productName +
+                        " - ₹" +
+                        product.price +
+                        "\n";
+
+                }
+            );
+
+
+            alert(message);
+
+        }
+
+
+
+        // =====================================
+        // LOGOUT
+        // =====================================
+
+        function logout() {
+
+
+            localStorage.removeItem(
+                "user"
+            );
+
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+
+        // =====================================
+        // LOAD PRODUCTS
+        // =====================================
+
+        loadProducts();
+
+
+    </script>
+
+
+</body>
+
+</html>
