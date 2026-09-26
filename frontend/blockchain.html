@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blockchain History - AgriChain</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .blockchain-container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 40px auto;
+        }
+
+        .blockchain-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .blockchain-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .blockchain-header p {
+            color: #666;
+        }
+
+        .transaction-count {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-count h2 {
+            font-size: 35px;
+            margin: 0;
+        }
+
+        .transaction-count p {
+            margin-top: 8px;
+            color: #666;
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f7f7f7;
+        }
+
+        .verified {
+            font-weight: bold;
+        }
+
+        .hash {
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            max-width: 250px;
+            color: #1a73e8;
+        }
+
+        .hash-not-available {
+            color: #888;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVIGATION BAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🌾 AgriChain
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="products.html">
+                Products
+            </a>
+
+            <a href="buyer.html">
+                Buyer
+            </a>
+
+            <a href="farmer.html">
+                Farmer
+            </a>
+
+            <a href="blockchain.html">
+                🔗 Blockchain
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN CONTAINER -->
+
+    <div class="blockchain-container">
+
+
+        <!-- HEADER -->
+
+        <div class="blockchain-header">
+
+            <h1>
+                🔗 Blockchain Transaction History
+            </h1>
+
+            <p>
+                Transparent and tamper-resistant agricultural
+                transaction records.
+            </p>
+
+        </div>
+
+
+        <!-- TRANSACTION COUNT -->
+
+        <div class="transaction-count">
+
+            <h2 id="transactionCount">
+                ...
+            </h2>
+
+            <p>
+                Total Blockchain Transactions
+            </p>
+
+        </div>
+
+
+        <!-- TRANSACTION TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Order ID</th>
+
+                        <th>Product</th>
+
+                        <th>Farmer</th>
+
+                        <th>Buyer</th>
+
+                        <th>Quantity</th>
+
+                        <th>Price</th>
+
+                        <th>Timestamp</th>
+
+                        <th>Transaction Hash</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="transactionTable">
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="loading"
+                        >
+
+                            Loading blockchain transactions...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        async function loadBlockchainTransactions() {
+
+            const table =
+                document.getElementById(
+                    "transactionTable"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:5000/api/blockchain/transactions"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to connect to blockchain API"
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                /*
+                 * Display total number of
+                 * blockchain transactions
+                 */
+
+                document.getElementById(
+                    "transactionCount"
+                ).textContent =
+                    data.count;
+
+
+                /*
+                 * Check if there are
+                 * no transactions
+                 */
+
+                if (
+                    !data.transactions ||
+                    data.transactions.length === 0
+                ) {
+
+                    table.innerHTML = `
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="empty-message"
+                            >
+
+                                No blockchain transactions found.
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                /*
+                 * Clear loading message
+                 */
+
+                table.innerHTML = "";
+
+
+                /*
+                 * Display every blockchain transaction
+                 */
+
+                data.transactions.forEach(
+                    (transaction, index) => {
+
+
+                        /*
+                         * Convert blockchain timestamp
+                         * into normal date and time
+                         */
+
+                        const date =
+                            new Date(
+                                transaction.timestamp * 1000
+                            );
+
+
+                        /*
+                         * Create table row
+                         */
+
+                        const row =
+                            document.createElement("tr");
+
+
+                        /*
+                         * Get transaction hash
+                         */
+
+                        const transactionHash =
+                            transaction.transactionHash;
+
+
+                        /*
+                         * Create row contents
+                         */
+
+                        row.innerHTML = `
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+
+                            <td>
+                                ${transaction.orderId}
+                            </td>
+
+
+                            <td>
+                                ${transaction.productName}
+                            </td>
+
+
+                            <td>
+                                ${transaction.farmerName}
+                            </td>
+
+
+                            <td>
+                                ${transaction.buyerName}
+                            </td>
+
+
+                            <td>
+                                ${transaction.quantity}
+                            </td>
+
+
+                            <td>
+                                ₹${transaction.price}
+                            </td>
+
+
+                            <td>
+                                ${date.toLocaleString()}
+                            </td>
+
+
+                            <td class="hash">
+
+                                ${
+                                    transactionHash
+                                        ? transactionHash
+                                        : `<span class="hash-not-available">
+                                            Hash not available
+                                           </span>`
+                                }
+
+                            </td>
+
+
+                            <td class="verified">
+
+                                ✓ Verified
+
+                            </td>
+
+                        `;
+
+
+                        /*
+                         * Add row to table
+                         */
+
+                        table.appendChild(row);
+
+                    }
+                );
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Blockchain Error:",
+                    error
+                );
+
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty-message"
+                        >
+
+                            ❌ Unable to load blockchain
+                            transactions.
+
+                            <br><br>
+
+                            Make sure Hardhat and the
+                            backend server are running.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+        /*
+         * Load transactions when
+         * page opens
+         */
+
+        loadBlockchainTransactions();
+
+    </script>
+
+
+</body>
+
+</html>

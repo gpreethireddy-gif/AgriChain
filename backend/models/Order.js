@@ -59,6 +59,13 @@ const orderSchema = new mongoose.Schema(
             required: true
         },
 
+        blockchainTransactions: [
+            {
+                productName: String,
+                transactionHash: String
+            }
+        ],
+
         status: {
             type: String,
             enum: [

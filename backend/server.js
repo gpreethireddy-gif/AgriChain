@@ -3,6 +3,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const blockchainRoutes = require("./routes/blockchain");
+
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const orderRoutes = require("./routes/order");
@@ -17,7 +19,7 @@ app.use(cors());
 
 app.use(express.json());
 
-
+app.use("/api/blockchain", blockchainRoutes);
 // =========================
 // AUTH ROUTES
 // =========================

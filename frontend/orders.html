@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - AgriChain</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav>
+        <h2>AgriChain</h2>
+
+        <div>
+            <a href="buyer.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="cart.html">Cart</a>
+            <a href="orders.html">My Orders</a>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <h1>My Orders</h1>
+
+        <div id="ordersContainer">
+            <p>Loading orders...</p>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        // Check login
+        if (!user) {
+
+            alert("Please login first.");
+
+            window.location.href = "login.html";
+
+        }
+
+
+        async function loadOrders() {
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:5000/api/orders/buyer/${user.id}`
+                );
+
+                const data = await response.json();
+
+                const ordersContainer =
+                    document.getElementById("ordersContainer");
+
+
+                if (!response.ok) {
+
+                    ordersContainer.innerHTML =
+                        "<p>Unable to load orders.</p>";
+
+                    return;
+
+                }
+
+
+                if (!data.orders || data.orders.length === 0) {
+
+                    ordersContainer.innerHTML = `
+                        <div class="card">
+                            <h3>No Orders Yet</h3>
+                            <p>You have not placed any orders.</p>
+
+                            <button onclick="goToProducts()">
+                                Browse Products
+                            </button>
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                ordersContainer.innerHTML = "";
+
+
+                data.orders.forEach(order => {
+
+                    const orderCard =
+                        document.createElement("div");
+
+                    orderCard.className = "card";
+
+
+                    let productsHTML = "";
+
+
+                    order.products.forEach(product => {
+
+                        productsHTML += `
+                            <div class="order-product">
+
+                                <h3>
+                                    ${product.productName}
+                                </h3>
+
+                                <p>
+                                    Farmer:
+                                    ${product.farmerName}
+                                </p>
+
+                                <p>
+                                    Quantity:
+                                    ${product.quantity}
+                                    ${product.unit}
+                                </p>
+
+                                <p>
+                                    Price:
+                                    ₹${product.price}
+                                </p>
+
+                            </div>
+                        `;
+
+                    });
+
+
+                    orderCard.innerHTML = `
+
+                        <h2>
+                            Order #${order._id}
+                        </h2>
+
+                        <p>
+                            <strong>Status:</strong>
+                            ${order.status}
+                        </p>
+
+                        <p>
+                            <strong>Total:</strong>
+                            ₹${order.totalAmount}
+                        </p>
+
+                        <p>
+                            <strong>Date:</strong>
+                            ${new Date(
+                                order.createdAt
+                            ).toLocaleString()}
+                        </p>
+
+                        <hr>
+
+                        <h3>Products</h3>
+
+                        ${productsHTML}
+
+                    `;
+
+
+                    ordersContainer.appendChild(orderCard);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Load Orders Error:",
+                    error
+                );
+
+                document.getElementById(
+                    "ordersContainer"
+                ).innerHTML = `
+                    <p>
+                        Unable to connect to server.
+                    </p>
+                `;
+
+            }
+
+        }
+
+
+        function goToProducts() {
+
+            window.location.href = "products.html";
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem("user");
+
+            localStorage.removeItem("cart");
+
+            window.location.href = "login.html";
+
+        }
+
+
+        // Load orders when page opens
+        loadOrders();
+
+    </script>
+
+</body>
+
+</html>

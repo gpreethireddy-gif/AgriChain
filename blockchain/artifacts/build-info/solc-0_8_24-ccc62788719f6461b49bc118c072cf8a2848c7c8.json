@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_24-ccc62788719f6461b49bc118c072cf8a2848c7c8",
+  "solcVersion": "0.8.24",
+  "solcLongVersion": "0.8.24+commit.e11b9ed9",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/AgriChain.sol": "project/contracts/AgriChain.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/AgriChain.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ncontract AgriChain {\r\n\r\n    struct Transaction {\r\n        uint256 orderId;\r\n        string productName;\r\n        string farmerName;\r\n        string buyerName;\r\n        uint256 quantity;\r\n        uint256 price;\r\n        uint256 timestamp;\r\n    }\r\n\r\n    Transaction[] public transactions;\r\n\r\n    event TransactionRecorded(\r\n        uint256 orderId,\r\n        string productName,\r\n        string farmerName,\r\n        string buyerName,\r\n        uint256 quantity,\r\n        uint256 price,\r\n        uint256 timestamp\r\n    );\r\n\r\n    function recordTransaction(\r\n        uint256 _orderId,\r\n        string memory _productName,\r\n        string memory _farmerName,\r\n        string memory _buyerName,\r\n        uint256 _quantity,\r\n        uint256 _price\r\n    ) public {\r\n\r\n        Transaction memory newTransaction = Transaction({\r\n            orderId: _orderId,\r\n            productName: _productName,\r\n            farmerName: _farmerName,\r\n            buyerName: _buyerName,\r\n            quantity: _quantity,\r\n            price: _price,\r\n            timestamp: block.timestamp\r\n        });\r\n\r\n        transactions.push(newTransaction);\r\n\r\n        emit TransactionRecorded(\r\n            _orderId,\r\n            _productName,\r\n            _farmerName,\r\n            _buyerName,\r\n            _quantity,\r\n            _price,\r\n            block.timestamp\r\n        );\r\n    }\r\n\r\n    function getTransactionCount() public view returns (uint256) {\r\n        return transactions.length;\r\n    }\r\n\r\n    function getTransaction(\r\n        uint256 _index\r\n    )\r\n        public\r\n        view\r\n        returns (\r\n            uint256,\r\n            string memory,\r\n            string memory,\r\n            string memory,\r\n            uint256,\r\n            uint256,\r\n            uint256\r\n        )\r\n    {\r\n        Transaction memory transaction = transactions[_index];\r\n\r\n        return (\r\n            transaction.orderId,\r\n            transaction.productName,\r\n            transaction.farmerName,\r\n            transaction.buyerName,\r\n            transaction.quantity,\r\n            transaction.price,\r\n            transaction.timestamp\r\n        );\r\n    }\r\n}"
+      }
+    }
+  }
+}
